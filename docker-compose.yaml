@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  ole:
+    image: ghcr.io/hostinger/hvps-openclaw:latest
+    container_name: ole
+    env_file:
+      - .env
+    ports:
+      - "${OLE_PORT:-77777}:3000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    container_name: ole-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ole-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  ole-db-data:
